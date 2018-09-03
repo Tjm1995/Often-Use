@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+        }
+    </style>
+    <style>canvas { width: 100%; height: 100% }</style>
+</head>
+<body oncontextmenu = "window.event.returnValue=false;">
+<div id="container"></div>
+<!--<script src="https://raw.githubusercontent.com/mrdoob/three.js/dev/build/three.min.js"></script>-->
+<script src="./Detector.js"></script>
+<script src="./three.min.js"></script>
+<script src="./stats.min.js"></script>
+<script src="./OrbitControls.js"></script>
+<script src="./ColladaLoader.js"></script>
+<!--<script>
+
+  //  var scene = new THREE.Scene();
+//  var camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+//
+//  var renderer = new THREE.WebGLRenderer({
+//    color: "#666"
+//  });
+//  renderer.setSize( window.innerWidth, window.innerHeight );
+//  document.body.appendChild( renderer.domElement );
+//
+//
+//  var geometry = new THREE.BoxGeometry( 1, 1, 1 );
+//  var material = new THREE.MeshBasicMaterial( { color: 0x00ccff } );
+//  var cube = new THREE.Mesh( geometry, material );
+//  scene.add( cube );
+//
+//  camera.position.z = 5;
+//  function animate() {
+//    cube.rotation.x += 0.1;
+//    cube.rotation.y += 0.1;
+//    requestAnimationFrame( animate );
+//    renderer.render( scene, camera );
+//  }
+//  if (Detector.webgl) {
+//    // Initiate function or other initializations here
+//    animate();
+//  } else {
+//    var warning = Detector.getWebGLErrorMessage();
+//    document.getElementById('container').appendChild(warning);
+//  }
+
+//var renderer = new THREE.WebGLRenderer();
+//renderer.setSize(window.innerWidth, window.innerHeight);
+//document.body.appendChild(renderer.domElement);
+//
+//var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 500);
+//camera.position.set(0, 0, 100);
+//camera.lookAt(new THREE.Vector3(0, 0, 0));
+//
+//var scene = new THREE.Scene();
+
+
+
+var scene = new THREE.Scene();
+
+  var  loader  =  new  THREE.ColladaLoader();
+//  loader.load ( './s14.dae',  function  ( result )  {
+//  loader.load ( './Twin_Towers[1].dae',  function  ( result )  {
+  loader.load ( './stormtrooper.dae',  function  ( result )  {
+    scene.add ( result.scene );
+  });
+
+
+
+
+
+
+var camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+camera.position.set(0, 0, 100);
+
+var renderer = new THREE.WebGLRenderer({
+  color: "#ccc"
+});
+renderer.setSize( window.innerWidth, window.innerHeight );
+document.body.appendChild( renderer.domElement );
+
+/*var geometry = new THREE.Geometry();
+var material = new THREE.LineBasicMaterial({ color: 0x00ccff });
+//var material = new THREE.LineBasicMaterial( { vertexColors: THREE.VertexColors } );
+var color1 = new THREE.Color( 0xff0000 );
+var color2 = new THREE.Color( 0x00ff00 );
+var color3 = new THREE.Color( 0x0000ff );
+var p = [
+  new THREE.Vector3(-10, 0, 0),
+  new THREE.Vector3(-10, 10, 0),
+  new THREE.Vector3(-10, 10, 10),
+  new THREE.Vector3(-10, 0, 10),
+  new THREE.Vector3(0, 0, 0),
+  new THREE.Vector3(0, 10, 0),
+  new THREE.Vector3(0, 10, 10),
+  new THREE.Vector3(0, 0, 10),
+  new THREE.Vector3(10, 0, 0),
+  new THREE.Vector3(10, 10, 0),
+  new THREE.Vector3(10, 10, 10),
+  new THREE.Vector3(10, 0, 10),
+]
+geometry.vertices.push(p[0]);
+geometry.vertices.push(p[1]);
+geometry.vertices.push(p[2]);
+geometry.vertices.push(p[3]);
+geometry.vertices.push(p[0]);
+geometry.vertices.push(p[4]);
+geometry.vertices.push(p[5]);
+geometry.vertices.push(p[1]);
+geometry.vertices.push(p[5]);
+geometry.vertices.push(p[6]);
+geometry.vertices.push(p[2]);
+geometry.vertices.push(p[6]);
+geometry.vertices.push(p[7]);
+geometry.vertices.push(p[3]);
+geometry.vertices.push(p[7]);
+geometry.vertices.push(p[4]);
+//geometry.colors.push( color1, color2, color3, color1 );
+var line = new THREE.Line( geometry, material );
+scene.add(line);
+
+var geometry = new THREE.Geometry();
+var tri = [
+  new THREE.Vector3(100, 0, 90),
+  new THREE.Vector3(100, 0, 110),
+  new THREE.Vector3(100, 14, 100),
+  new THREE.Vector3(100, 0, 90),
+]
+geometry.vertices.push(tri[0]);
+geometry.vertices.push(tri[1]);
+geometry.vertices.push(tri[2]);
+geometry.vertices.push(tri[3]);
+var material = new THREE.LineBasicMaterial({ color: 0x00ccff });
+var line = new THREE.Line( geometry, material );
+scene.add(line);*/
+
+(function () {
+  var cvs = document.getElementsByTagName("canvas")[0];
+  var vectorx = 0;
+  var vectory = 0;
+  var vectorz = 100;
+  var rotationx = 0;
+  var rotationy = 0;
+  cvs.onwheel=function(e){
+    vectorz += e.deltaY/100*10;
+    if(vectorz<10)vectorz = 10;
+    camera.position.z = vectorz;
+    renderer.render( scene, camera );
+  };
+
+  var keymove = 0;
+  var speed = 1;
+  function w_down(e){
+    vectorx += - speed * Math.sin(camera.rotation.y);
+    vectorz += - speed * Math.cos(camera.rotation.y);
+    camera.position.x = vectorx;
+    camera.position.z = vectorz;
+    renderer.render( scene, camera );
+  };
+  function s_down(e){
+    vectorx += speed * Math.sin(camera.rotation.y);
+    vectorz += speed * Math.cos(camera.rotation.y);
+    camera.position.x = vectorx;
+    camera.position.z = vectorz;
+    renderer.render( scene, camera );
+  };
+  function a_down(e){
+    vectorx += - speed * Math.cos(camera.rotation.y);
+    vectorz += speed * Math.sin(camera.rotation.y);
+    camera.position.x = vectorx;
+    camera.position.z = vectorz;
+    renderer.render( scene, camera );
+    console.log(vectorx,vectorz)
+  };
+  function d_down(e){
+    vectorx += speed * Math.cos(camera.rotation.y);
+    vectorz += - speed * Math.sin(camera.rotation.y);
+    camera.position.x = vectorx;
+    camera.position.z = vectorz;
+    renderer.render( scene, camera );
+  };
+  document.onkeydown = function (e) {
+    console.log(e.keyCode)
+    clearInterval(keymove);
+    if(e.keyCode === 87){
+      w_down();
+      keymove = setInterval(w_down, 50);
+    }
+    if(e.keyCode === 83){
+      s_down();
+      keymove = setInterval(s_down, 50);
+    }
+    if(e.keyCode === 65){
+      a_down();
+      keymove = setInterval(a_down, 50);
+    }
+    if(e.keyCode === 68){
+      d_down();
+      keymove = setInterval(d_down, 50);
+    }
+  }
+  document.onkeyup = function (e) {
+    clearInterval(keymove);
+  }
+  cvs.onmousedown = function (e) {
+    if(e.which === 1)leftclick(e);
+    if(e.which === 3)rightclick(e);
+  }
+  function leftclick(e) {
+    var beginx = e.x;
+    var beginy = e.y;
+    var movex = 0;
+    var movey = 0;
+    cvs.style.cursor = "pointer";
+    cvs.onmousemove=function(e){
+      movex = (e.x - beginx)/100*vectorz;
+      movey = (e.y - beginy)/100*vectorz;
+
+//      vectorx += movex;
+//      vectory -= movey;
+      camera.position.x = vectorx + movex;
+      camera.position.y = vectory - movey;
+      renderer.render( scene, camera );
+    };
+    cvs.onmouseup=function(e){
+      movex = (e.x - beginx)/100*vectorz;
+      movey = (e.y - beginy)/100*vectorz;
+      vectorx += movex;
+      vectory -= movey;
+      this.style.cursor = "auto";
+      cvs.onmousemove=null;
+
+      camera.position.x = vectorx;
+      camera.position.y = vectory;
+      renderer.render( scene, camera );
+    };
+  }
+  function rightclick(e) {
+    var beginx = e.x;
+    var beginy = e.y;
+    var movex = 0;
+    var movey = 0;
+    cvs.style.cursor = "pointer";
+    cvs.onmousemove=function(e){
+      movex = (e.x - beginx)/100/360*vectorz;
+      movey = (e.y - beginy)/100/360*vectorz;
+
+      camera.rotation.y = rotationx - movex;
+      camera.rotation.x = rotationy + movey;
+      renderer.render( scene, camera );
+    };
+    cvs.onmouseup=function(e){
+      movex = (e.x - beginx)/100/360*vectorz;
+      movey = (e.y - beginy)/100/360*vectorz;
+      rotationx -= movex;
+      rotationy += movey;
+      this.style.cursor = "auto";
+      cvs.onmousemove=null;
+
+      camera.rotation.y = rotationx;
+      camera.rotation.x = rotationy;
+      console.log(camera.rotation)
+      renderer.render( scene, camera );
+    };
+  }
+
+  renderer.render( scene, camera );
+})();
+</script>-->
+<script>
+  if ( ! Detector.webgl ) Detector.addGetWebGLMessage();
+
+  var container, stats, clock, controls;
+  var camera, scene, renderer, mixer;
+
+  init();
+  animate();
+
+  function init() {
+
+    container = document.getElementById( 'container' );
+
+    camera = new THREE.PerspectiveCamera( 25, window.innerWidth / window.innerHeight, 1, 10000 );
+    camera.position.set( 15, 10, - 15 );
+
+    scene = new THREE.Scene();
+    clock = new THREE.Clock();
+    // collada
+    var loader = new THREE.ColladaLoader();
+/*    loader.load( './dae/stormtrooper.dae', function ( collada ) {
+      var animations = collada.animations;
+      var avatar = collada.scene;
+      mixer = new THREE.AnimationMixer( avatar );
+      var action = mixer.clipAction( animations[ 0 ] ).play();
+      scene.add( avatar );
+    } );*/
+//    loader.load( './dae/Twin_Towers[1].dae', function ( collada ) {
+    loader.load( './dae/stormtrooper.dae', function ( collada ) {
+      var avatar = collada.scene;
+      scene.add( avatar );
+    } );
+    //
+    var gridHelper = new THREE.GridHelper( 10, 20 );
+    scene.add( gridHelper );
+    //
+    var ambientLight = new THREE.AmbientLight( 0xffffff, 0.2 );
+    scene.add( ambientLight );
+
+    var directionalLight = new THREE.DirectionalLight( 0xffffff, 0.8 );
+    directionalLight.position.set( 1, 1, - 1 );
+    scene.add( directionalLight );
+    //
+    renderer = new THREE.WebGLRenderer( { antialias: true } );
+    renderer.setPixelRatio( window.devicePixelRatio );
+    renderer.setSize( window.innerWidth, window.innerHeight );
+    container.appendChild( renderer.domElement );
+    //
+    controls = new THREE.OrbitControls( camera, renderer.domElement );
+    controls.target.set( 0, 2, 0 );
+    controls.update();
+    //
+    stats = new Stats();
+    container.appendChild( stats.dom );
+    //
+    window.addEventListener( 'resize', onWindowResize, false );
+  }
+  function onWindowResize() {
+    camera.aspect = window.innerWidth / window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize( window.innerWidth, window.innerHeight );
+  }
+  function animate() {
+    requestAnimationFrame( animate );
+    render();
+    stats.update();
+  }
+  function render() {
+    var delta = clock.getDelta();
+    if ( mixer !== undefined ) {
+      mixer.update( delta );
+    }
+    renderer.render( scene, camera );
+  }
+</script>
+</body>
+</html>
